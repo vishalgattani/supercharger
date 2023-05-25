@@ -65,5 +65,5 @@ if isinstance(status, Node):
 	display_path(data,path)
 else:
 	path = None
-	warning.warn("Planner couldn't find a path. Terminating...")
+	warnings.warn("Planner couldn't find a path. Terminating...")
 	sys.exit()
