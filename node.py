@@ -17,16 +17,16 @@ def compute_drive_statistics(node1,node2):
 
 def compute_distancetoreach(node1,node2,max_dist=max_dist):
 	return distance_on_earth_nodes(node1,node2)
-		
+
 def compute_heuristic(node,goal,velocity=velocity,max_dist=max_dist):
 	"""_summary_
-		time spent in totality = drive time to reach a node + charging time + distance to goal / velocity 
+		time spent in totality = drive time to reach a node + charging time + distance to goal / velocity
 	"""
 	distance_from_goal = compute_distancetoreach(node,goal)
 	node.set_distancefromgoal(distance_from_goal)
 	if distance_from_goal !=0:
-		heuristic = node.get_drivetimetoreach() + node.get_charge_time() + distance_from_goal/velocity
-	else: heuristic = node.get_drivetimetoreach() + node.get_charge_time() 
+		heuristic = node.get_drivetimetoreach() + node.get_charge_time() + node.get_distancefromgoal()/velocity + node.get_distancefromgoal()/134.0
+	else: heuristic = node.get_drivetimetoreach() + node.get_charge_time()
 	heuristic = abs(heuristic)
 	node.set_heuristic(heuristic)
 
@@ -70,6 +70,8 @@ class Node(object):
 
 	def set_drivetimetoreach(self,drivetimetoreach):
 		self.drivetimetoreach = drivetimetoreach
+		if self.parent:
+			self.drivetimetoreach += self.parent.drivetimetoreach
 	def get_drivetimetoreach(self):
 		return self.drivetimetoreach
 
