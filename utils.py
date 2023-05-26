@@ -23,7 +23,7 @@ def add_random_charging_rates(data,min_range=80,max_range=180):
 	for i in range(0, len(data)):
 		rate = random.uniform(min_range, max_range)
 		charging_rates.append(rate)
-		
+
 	data['charging_rate'] = charging_rates
 	data.charging_rate = data.charging_rate.round(3)
 	return data
@@ -34,10 +34,10 @@ def distance_on_earth(lat1, long1, lat2, long2, radius=earth_radius):
 	Compute distance between two points on earth specified by latitude/longitude.
 	The earth is assumed to be a perfect sphere of given radius. The radius defaults
 	to 6378.388 kilometers. To convert to miles, divide by 1.60934
-	
+
 	Reference
 	---------
-	Adopted from John D. Cook's blog post: 
+	Adopted from John D. Cook's blog post:
 	http://www.johndcook.com/blog/python_longitude_latitude/
 	"""
 	# radius = 6378.388
@@ -51,9 +51,9 @@ def distance_on_earth(lat1, long1, lat2, long2, radius=earth_radius):
 	# theta = longitude
 	theta1 = long1 * degrees_to_radians
 	theta2 = long2 * degrees_to_radians
-		 
-	# Compute spherical distance from spherical coordinates.     
-	cos = (np.sin(phi1) * np.sin(phi2)* np.cos(theta1 - theta2) + 
+
+	# Compute spherical distance from spherical coordinates.
+	cos = (np.sin(phi1) * np.sin(phi2)* np.cos(theta1 - theta2) +
 		   np.cos(phi1) * np.cos(phi2))
 	arc = np.arccos(cos)
 	rv = arc * radius
@@ -79,12 +79,12 @@ def plot_superchargers(data):
 			cmax = data.charging_rate.max(),
 			colorbar_title="Charging Rate"
 		)))
-	
+
 
 	fig.update_layout(
 			title = 'Tesla Supercharger Network',
 			geo_scope='usa',
-			
+
 		)
 	fig.show()
 
@@ -121,18 +121,18 @@ def plot_superchargers_with_path(data,pathdf):
 			color = data.charging_rate,
 			cmax = data.charging_rate.max(),
 			colorbar_title="Charging Rate"
-			
+
 		))
 
 			]
 
 	fig = go.Figure(data=plots)
-	
+
 	fig.update_layout(
 			title = 'Tesla Supercharger Network',
 			geo_scope='usa',
 			showlegend=False
-			
+
 		)
 	fig.show()
 
@@ -159,4 +159,18 @@ def distance_on_earth_nodes(node1, node2, radius=6356.752):
 	c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
 	d = radius * c
 
-	return d
+	# phi = 90 - latitude
+	phi1 = (lat1) * degrees_to_radians
+	phi2 = (lat2) * degrees_to_radians
+
+	# theta = longitude
+	theta1 = long1 * degrees_to_radians
+	theta2 = long2 * degrees_to_radians
+
+	# Compute spherical distance from spherical coordinates.
+	cos = (np.sin(phi1) * np.sin(phi2)* np.cos(theta1 - theta2) +
+		   np.cos(phi1) * np.cos(phi2))
+	arc = np.arccos(cos)
+	rv = arc * radius
+
+	return rv
