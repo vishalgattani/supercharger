@@ -90,40 +90,50 @@ def plot_superchargers(data):
 
 def plot_superchargers_with_path(data,pathdf):
 	data['val'] = data.Location.astype(str)+": "+data.charging_rate.astype(str)
-	pathdf['val'] = pathdf.Location.astype(str)+": "+pathdf.dist_from_parent.astype(str)
+	pathdf['val'] = pathdf.Location.astype(str)+"<br>distance_from_parent:"+pathdf.dist_from_parent.astype(str)+"<br>charging_rate:"+pathdf.charging_rate.astype(str)+"<br>time_spent_charging:"+pathdf.time_spent_charging.astype(str)+"<br>time_spent_driving:"+pathdf.time_spent_driving.astype(str)+"<br>time_spent:"+pathdf.time_spent.astype(str)
 
-	plots = [go.Scattergeo(
+	print(pathdf.columns)
+
+	plots = [
+     	go.Scattergeo(
+        hoverinfo='none',
 		lon = data.lng,
 		lat = data.lat,
-		text = data.val,
+		# text = data.val,
 		mode = 'markers',
 		marker = dict(
 			size = 8,
-			opacity = 0.8,
+			opacity = 0.5,
 			reversescale = False,
 			autocolorscale = False,
 			cmin = data.charging_rate.min(),
 			color = data.charging_rate,
 			cmax = data.charging_rate.max(),
-			colorbar_title="Charging Rate"
-		)),
-			go.Scattergeo(
+			colorbar_title="Charging Rate")
+		),
+		go.Scattergeo(
 		lon = pathdf.lng,
 		lat = pathdf.lat,
 		text = pathdf.val,
-		mode = 'markers+lines',
+		mode = "lines",
+		line = dict(width=4, dash='dash'),
+
 		marker = dict(
-			size = 1,
-			opacity = 0.01,
+			size = 8,
+			opacity = 1,
 			reversescale = False,
 			autocolorscale = False,
 			cmin = data.charging_rate.min(),
 			color = data.charging_rate,
 			cmax = data.charging_rate.max(),
-			colorbar_title="Charging Rate"
-
-		))
-
+			colorbar_title="Charging Rate")
+  		),
+	# 		go.Scattermapbox(
+    # mode = "markers",
+    # lon = pathdf.lng,
+	# lat = pathdf.lat,
+    # marker = {'size': 320, 'sizemode':'area', 'symbol': "circle", 'opacity':0.3, 'allowoverlap': True,},
+    # hoverinfo='skip')
 			]
 
 	fig = go.Figure(data=plots)
@@ -131,9 +141,16 @@ def plot_superchargers_with_path(data,pathdf):
 	fig.update_layout(
 			title = 'Tesla Supercharger Network',
 			geo_scope='usa',
-			showlegend=False
-
+			showlegend=False,
+			# mapbox = {
+			# 		'accesstoken': "pk.eyJ1IjoidmlzaGFsZ2F0dGFuaTEwIiwiYSI6ImNqazdvZjU1ajIwc24za241Ynp0b3FiMjIifQ.KOjDXUbj17uYUWgo_aFKQA",
+			# 		# 'style': "streets",
+			# 		# 'bearing': 0,
+			# 		# 'pitch': 0,
+			# 		# 'zoom': 4.6
+			# 	},
 		)
+
 	fig.show()
 
 
@@ -162,6 +179,10 @@ def distance_on_earth_nodes(node1, node2, radius=6356.752):
 	# phi = 90 - latitude
 	phi1 = (lat1) * degrees_to_radians
 	phi2 = (lat2) * degrees_to_radians
+
+	# phi1 = (90.0 - lat1) * degrees_to_radians
+	# phi2 = (90.0 - lat2) * degrees_to_radians
+
 
 	# theta = longitude
 	theta1 = long1 * degrees_to_radians
