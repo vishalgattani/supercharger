@@ -6,7 +6,7 @@ verbose = False
 velocity = 105.0
 max_dist = 320.0
 earth_radius = 6356.752
-webscraper_data = True
+webscraper_data = False
 parse = False
 
 data_directory = "./data/"
