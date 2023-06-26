@@ -6,9 +6,11 @@ import warnings
 import chart_studio
 import chart_studio.plotly as cspy
 import chart_studio.tools as tls
+from queue import PriorityQueue
+
 
 from sample_data import network
-from parser import tesla_supercharger_parser
+from tesla_supercharger_web_parser import tesla_supercharger_parser
 from print_utils import Printer
 from utils import read_csv, add_random_charging_rates, plot_superchargers, plot_superchargers_with_path
 from planner import planner, backtrack, print_path_results, display_path
@@ -36,6 +38,7 @@ if webscraper_data:
 	goal_idx = df.index.tolist()[1]
 	start = data.iloc[start_idx]
 	goal = data.iloc[goal_idx]
+
 	start_node = Node(start.Location,start.lat,start.lng,start.charging_rate)
 	goal_node = Node(goal.Location,goal.lat,goal.lng,goal.charging_rate)
 
@@ -59,6 +62,10 @@ for i in range(len(query)):
 	sample = Node(row.Location,row.lat,row.lng,row.charging_rate)
 	nodes.append(sample)
 
+# my planner
+
+start_node.set_remaining_fuel_distance(max_dist)
+
 status = planner(start_node,goal_node,nodes)
 if isinstance(status, Node):
 	path = backtrack(status)
@@ -67,3 +74,9 @@ else:
 	path = None
 	warnings.warn("Planner couldn't find a path. Terminating...")
 	sys.exit()
+
+
+# new planner
+
+
+
