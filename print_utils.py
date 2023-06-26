@@ -6,7 +6,6 @@ import os
 import numpy as np
 import logging
 from termcolor import colored
-import cv2
 
 myjet = np.array([[0.        , 0.        , 0.5       ],
                   [0.        , 0.        , 0.99910873],
