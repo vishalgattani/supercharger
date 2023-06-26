@@ -19,7 +19,7 @@ def planner(start_node,goal_node,nodes):
 		current_id = min(openset, key=lambda o: openset[o].heuristic)
 		current = openset[current_id]
 
-		# Printer.yellow(current.get_details())
+		Printer.yellow(current.get_details())
 
 		if(current.id == goal_node.id):
 			Printer.green("Goal reached!")
@@ -62,21 +62,16 @@ def backtrack(current):
 	while current:
 		# print(current)
 		current.compute_distance_from_parent()
-		path.append([current.id,current.lat,current.lng,current.charging_rate,current.distancefromparent,current.heuristic])
+		path.append([current.id,current.lat,current.lng,current.charging_rate,current.distancefromparent,current.heuristic,current.remaining_fuel_distance,current.get_charge_time()])
 		current = current.parent
 
 	path = path[::-1]
 	return path
 
-def print_path_results(pathdf):
-	Printer.yellow("Path Results:")
-	print(pathdf)
-
-
 def display_path(data,path,plot=True):
 	if path is not None:
-		pathdf = pd.DataFrame(path, columns = ['Location', 'lat','lng','charging_rate','dist_from_parent','heuristic'])
-		pathdf['time_spent_charging'] = pathdf['dist_from_parent']/pathdf['charging_rate']
+		pathdf = pd.DataFrame(path, columns = ['Location', 'lat','lng','charging_rate','dist_from_parent','heuristic','remaining_fuel_distance','time_spent_charging'])
+		# pathdf.loc[:,'time_spent_charging'] = [x.get_charge_time() for x in path] #pathdf['dist_from_parent']/pathdf['charging_rate']
 		pathdf['time_spent_driving'] = pathdf['dist_from_parent']/velocity
 		pathdf['time_spent'] =  pathdf['time_spent_charging'] + pathdf['time_spent_driving']
 		pathdf = pathdf.replace(float('inf'), 0)
@@ -84,5 +79,9 @@ def display_path(data,path,plot=True):
 		plot_superchargers_with_path(data,pathdf)
 		print_path_results(pathdf)
 
+def print_path_results(pathdf):
+	Printer.yellow("Path Results:")
+	print(pathdf)
 
-			
+
+
