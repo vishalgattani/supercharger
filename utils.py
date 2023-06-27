@@ -90,50 +90,90 @@ def plot_superchargers(data):
 
 def plot_superchargers_with_path(data,pathdf):
 	data['val'] = data.Location.astype(str)+": "+data.charging_rate.astype(str)
-	pathdf['val'] = pathdf.Location.astype(str)+"<br>distance_from_parent:"+pathdf.dist_from_parent.astype(str)+"<br>charging_rate:"+pathdf.charging_rate.astype(str)+"<br>time_spent_charging:"+pathdf.time_spent_charging.astype(str)+"<br>time_spent_driving:"+pathdf.time_spent_driving.astype(str)+"<br>time_spent:"+pathdf.time_spent.astype(str)
 
+	tmp = pathdf.select_dtypes(include=[np.float64])
+	pathdf.loc[:, tmp.columns] = np.round(tmp,2)
+
+	pathdf['val'] = "Distance to reach "+pathdf.Location.astype(str)+": "+pathdf.dist_from_parent.astype(str)+"<br>Charging Rate of station:"+pathdf.charging_rate.astype(str)+"<br>Charging Time:"+pathdf.time_spent_charging.astype(str)+"<br>Driving Time:"+pathdf.time_spent_driving.astype(str)+"<br>Total Time spent to reach station and charge:"+pathdf.time_spent.astype(str)+"<br>Total Time spent cumulative:"+pathdf.total_time_spent.astype(str)
+
+
+
+	charge_cond = pathdf.time_spent_charging > 0
+	charge_df = pathdf[charge_cond]
+
+	cond = data['Location'].isin(pathdf['Location'])
+	data.drop(data[cond].index, inplace = True)
 	print(pathdf.columns)
 
 	plots = [
-     	go.Scattergeo(
-        hoverinfo='none',
+     	# go.Scattergeo(
+        # hoverinfo='none',
+		# lon = data.lng,
+		# lat = data.lat,
+		# # text = data.val,
+		# mode = 'markers',
+		# marker = dict(
+		# 	size = 8,
+		# 	opacity = 0.5,
+		# 	reversescale = False,
+		# 	autocolorscale = False,
+		# 	cmin = data.charging_rate.min(),
+		# 	color = data.charging_rate,
+		# 	cmax = data.charging_rate.max(),
+		# 	colorbar_title="Charging Rate")
+		# ),
+		# go.Scattergeo(
+		# lon = pathdf.lng,
+		# lat = pathdf.lat,
+		# text = pathdf.val,
+		# mode = "lines",
+		# line = dict(width=4, dash='dash'),
+
+		# marker = dict(
+		# 	size = 8,
+		# 	opacity = 1,
+		# 	reversescale = False,
+		# 	autocolorscale = False,
+		# 	cmin = data.charging_rate.min(),
+		# 	color = data.charging_rate,
+		# 	cmax = data.charging_rate.max(),
+		# 	colorbar_title="Charging Rate")
+  		# ),
+
+		# go.Scattermapbox(
+		# mode = "markers",
+		# lon = pathdf.lng,
+		# lat = pathdf.lat,
+		# marker = { 'symbol': "fuel", 'opacity':1, 'allowoverlap': True,"size" :5,},
+		# hoverinfo='skip'),
+
+		go.Scattermapbox(
+		# hoverinfo='none',
+		# text = pathdf.val,
 		lon = data.lng,
 		lat = data.lat,
-		# text = data.val,
-		mode = 'markers',
-		marker = dict(
-			size = 8,
-			opacity = 0.5,
-			reversescale = False,
-			autocolorscale = False,
-			cmin = data.charging_rate.min(),
-			color = data.charging_rate,
-			cmax = data.charging_rate.max(),
-			colorbar_title="Charging Rate")
-		),
-		go.Scattergeo(
+        mode='markers',
+        marker = {'size': 5,
+                  'symbol': ["fuel"]*len(data),
+                  'allowoverlap': True,
+                #   'color': pathdf.charging_rate,
+                  'cmin': data.charging_rate.min(),
+                  'cmax': data.charging_rate.max()
+                }),
+
+		go.Scattermapbox(
+		text = pathdf.val,
 		lon = pathdf.lng,
 		lat = pathdf.lat,
-		text = pathdf.val,
-		mode = "lines",
-		line = dict(width=4, dash='dash'),
+        mode='markers+lines',
+        marker = {'size': 8,
+                  'symbol': ["fuel"]*len(pathdf),
+                  'allowoverlap': True,
+                #   'color': pathdf.charging_rate,
+                }
+    	),
 
-		marker = dict(
-			size = 8,
-			opacity = 1,
-			reversescale = False,
-			autocolorscale = False,
-			cmin = data.charging_rate.min(),
-			color = data.charging_rate,
-			cmax = data.charging_rate.max(),
-			colorbar_title="Charging Rate")
-  		),
-	# 		go.Scattermapbox(
-    # mode = "markers",
-    # lon = pathdf.lng,
-	# lat = pathdf.lat,
-    # marker = {'size': 320, 'sizemode':'area', 'symbol': "circle", 'opacity':0.3, 'allowoverlap': True,},
-    # hoverinfo='skip')
+
 			]
 
 	fig = go.Figure(data=plots)
@@ -142,14 +182,21 @@ def plot_superchargers_with_path(data,pathdf):
 			title = 'Tesla Supercharger Network',
 			geo_scope='usa',
 			showlegend=False,
-			# mapbox = {
-			# 		'accesstoken': "pk.eyJ1IjoidmlzaGFsZ2F0dGFuaTEwIiwiYSI6ImNqazdvZjU1ajIwc24za241Ynp0b3FiMjIifQ.KOjDXUbj17uYUWgo_aFKQA",
-			# 		# 'style': "streets",
-			# 		# 'bearing': 0,
-			# 		# 'pitch': 0,
-			# 		# 'zoom': 4.6
-			# 	},
+			mapbox = dict(
+			accesstoken="pk.eyJ1IjoidmlzaGFsZ2F0dGFuaTEwIiwiYSI6ImNqazdvZjU1ajIwc24za241Ynp0b3FiMjIifQ.KOjDXUbj17uYUWgo_aFKQA",
+			bearing=0,
+			center=dict(
+				lat=38.92,
+				lon=-99.3
+			),
+			pitch=0,
+			zoom=3.5
+    ),
 		)
+
+	fig.update_traces(name='Station', showlegend = False)
+
+
 
 	fig.show()
 
