@@ -200,7 +200,7 @@ def plot_superchargers_with_path(data,pathdf):
 	fname = pathdf.Location.values.tolist()[0]+"_to_"+pathdf.Location.values.tolist()[-1]+".html"
 
 	fig.write_html(fname,
-                full_html=False,
+                full_html=True,
                 include_plotlyjs='cdn')
 
 	fig.show()
