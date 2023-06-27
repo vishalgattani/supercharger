@@ -180,7 +180,7 @@ def plot_superchargers_with_path(data,pathdf):
 	fig = go.Figure(data=plots)
 
 	fig.update_layout(
-			title = 'Tesla Supercharger Network',
+			title = 'Tesla Supercharger Network from '+pathdf.Location.values.tolist()[0]+" to "+pathdf.Location.values.tolist()[-1],
 			geo_scope='usa',
 			showlegend=False,
 			mapbox = dict(
@@ -197,9 +197,15 @@ def plot_superchargers_with_path(data,pathdf):
 
 	fig.update_traces(name='Station', showlegend = False)
 
+	fname = pathdf.Location.values.tolist()[0]+"_to_"+pathdf.Location.values.tolist()[-1]+".html"
 
+	fig.write_html(fname,
+                full_html=False,
+                include_plotlyjs='cdn')
 
 	fig.show()
+
+
 
 
 
