@@ -2,6 +2,7 @@ import pandas as pd
 import math
 import random
 import warnings
+import plotly
 import plotly.graph_objects as go
 import plotly.io as pio
 from plotly.subplots import make_subplots
@@ -10,6 +11,9 @@ import plotly.express as px
 import numpy as np
 from global_vars import min_charging_rate, max_charging_rate ,decimal_places ,verbose ,velocity ,max_dist ,earth_radius, parse
 from credentials import mapbox_token
+import chart_studio
+import chart_studio.plotly as cspy
+import chart_studio.tools as tls
 
 def read_csv(filename):
 	df = pd.read_csv(filename)
@@ -199,10 +203,14 @@ def plot_superchargers_with_path(data,pathdf):
 
 	fname = pathdf.Location.values.tolist()[0]+"_to_"+pathdf.Location.values.tolist()[-1]+".html"
 
-	fig.write_html(fname,
-                full_html=True,
-                include_plotlyjs='cdn')
+	# fig.write_html(fname,
+    #             full_html=False,
+    #             include_plotlyjs='cdn')
 
+	ret = cspy.iplot(fig,filename=fname,auto_open=False)
+	print(ret)
+	# print(fig.to_html(full_html=False, include_plotlyjs='cdn'))
+	# print(plotly.offline.plot(fig, include_plotlyjs=False, output_type='div'))
 	fig.show()
 
 
