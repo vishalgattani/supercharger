@@ -9,6 +9,7 @@ import plotly.graph_objects as go
 import plotly.express as px
 import numpy as np
 from global_vars import min_charging_rate, max_charging_rate ,decimal_places ,verbose ,velocity ,max_dist ,earth_radius, parse
+from credentials import mapbox_token
 
 def read_csv(filename):
 	df = pd.read_csv(filename)
@@ -183,8 +184,8 @@ def plot_superchargers_with_path(data,pathdf):
 			geo_scope='usa',
 			showlegend=False,
 			mapbox = dict(
-			accesstoken="pk.eyJ1IjoidmlzaGFsZ2F0dGFuaTEwIiwiYSI6ImNqazdvZjU1ajIwc24za241Ynp0b3FiMjIifQ.KOjDXUbj17uYUWgo_aFKQA",
-			bearing=0,
+			accesstoken = mapbox_token,
+   			bearing=0,
 			center=dict(
 				lat=38.92,
 				lon=-99.3
