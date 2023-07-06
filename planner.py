@@ -76,12 +76,11 @@ def display_path(data,path,plot=True):
 		pathdf['time_spent'] =  pathdf['time_spent_charging'] + pathdf['time_spent_driving']
 		pathdf = pathdf.replace(float('inf'), 0)
 		pathdf['total_time_spent'] = pathdf['time_spent'].cumsum()
-		plot_superchargers_with_path(data,pathdf)
-		print_path_results(pathdf)
+		Printer.yellow("Path Results:")
+		print(pathdf)
+		return pathdf
 
-def print_path_results(pathdf):
-	Printer.yellow("Path Results:")
-	print(pathdf)
+
 
 
 
