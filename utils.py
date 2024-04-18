@@ -99,7 +99,7 @@ def plot_superchargers_with_path(data,pathdf):
 	tmp = pathdf.select_dtypes(include=[np.float64])
 	pathdf.loc[:, tmp.columns] = np.round(tmp,2)
 
-	pathdf['val'] = "Distance to reach "+pathdf.Location.astype(str)+": "+pathdf.dist_from_parent.astype(str)+"<br>Charging Rate of station:"+pathdf.charging_rate.astype(str)+"<br>Charging Time:"+pathdf.time_spent_charging.astype(str)+"<br>Driving Time:"+pathdf.time_spent_driving.astype(str)+"<br>Total Time spent to reach station and charge:"+pathdf.time_spent.astype(str)+"<br>Total Time spent cumulative:"+pathdf.total_time_spent.astype(str)
+	pathdf['val'] = "Distance to reach "+pathdf.Location.astype(str)+": "+pathdf.dist_from_parent.astype(str)+"\nCharging Rate of station:"+pathdf.charging_rate.astype(str)+"\nCharging Time:"+pathdf.time_spent_charging.astype(str)+"\nDriving Time:"+pathdf.time_spent_driving.astype(str)+"\nTotal Time spent to reach station and charge:"+pathdf.time_spent.astype(str)+"\nTotal Time spent cumulative:"+pathdf.total_time_spent.astype(str)
 
 
 
@@ -167,7 +167,7 @@ def plot_superchargers_with_path(data,pathdf):
                 }),
 
 		go.Scattermapbox(
-		text = pathdf.val,
+		# text = pathdf.val,
 		lon = pathdf.lng,
 		lat = pathdf.lat,
         mode='markers+lines',
@@ -195,7 +195,8 @@ def plot_superchargers_with_path(data,pathdf):
 				lon=-99.3
 			),
 			pitch=0,
-			zoom=3.5
+			# zoom=3,
+
     ),
 		)
 
@@ -207,12 +208,13 @@ def plot_superchargers_with_path(data,pathdf):
     #             full_html=False,
     #             include_plotlyjs='cdn')
 
-	ret = cspy.iplot(fig,filename=fname,auto_open=False)
-	print(ret)
+	# ret = cspy.iplot(fig,filename=fname,auto_open=False)
+	# print(ret)
 	# print(fig.to_html(full_html=False, include_plotlyjs='cdn'))
 	# print(plotly.offline.plot(fig, include_plotlyjs=False, output_type='div'))
-	fig.show()
+	# fig.show()
 
+	return fig
 
 
 
